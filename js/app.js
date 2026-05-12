@@ -557,3 +557,66 @@ document.addEventListener('screenchange', e => {
   if (e.detail.screen === 'menu') updateMenuStats();
   if (e.detail.screen === 'historial' && typeof renderHistorial === 'function') renderHistorial();
 });
+
+// ══════════════════════════════════════════════════════════════════════════
+//  BACK-BAR STICKY INTELIGENTE
+//  Auto-hide en scroll down, show en scroll up
+//  AGREGAR A js/app.js (al final del archivo, antes del cierre)
+// ══════════════════════════════════════════════════════════════════════════
+
+(function() {
+  'use strict';
+  
+  // Solo activar en móvil
+  if (window.innerWidth > 600) return;
+  
+  let lastScrollY = 0;
+  let ticking = false;
+  const threshold = 10; // Mínimo scroll para activar
+  const backBar = document.querySelector('.back-bar');
+  
+  if (!backBar) return;
+  
+  function updateBackBar() {
+    const currentScrollY = window.scrollY || window.pageYOffset;
+    
+    // Si estamos en el top, siempre mostrar
+    if (currentScrollY < threshold) {
+      backBar.classList.remove('hidden');
+      lastScrollY = currentScrollY;
+      ticking = false;
+      return;
+    }
+    
+    // Detectar dirección de scroll
+    if (currentScrollY > lastScrollY) {
+      // Scroll DOWN → ocultar
+      backBar.classList.add('hidden');
+    } else {
+      // Scroll UP → mostrar
+      backBar.classList.remove('hidden');
+    }
+    
+    lastScrollY = currentScrollY;
+    ticking = false;
+  }
+  
+  function onScroll() {
+    if (!ticking) {
+      window.requestAnimationFrame(updateBackBar);
+      ticking = true;
+    }
+  }
+  
+  // Listener con passive para mejor performance
+  window.addEventListener('scroll', onScroll, { passive: true });
+  
+  // Re-evaluar en resize (rotación de pantalla)
+  window.addEventListener('resize', function() {
+    if (window.innerWidth > 600) {
+      backBar.classList.remove('hidden');
+      window.removeEventListener('scroll', onScroll);
+    }
+  }, { passive: true });
+  
+})();
