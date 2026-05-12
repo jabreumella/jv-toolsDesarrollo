@@ -2533,3 +2533,114 @@ input[type=range]::-moz-range-thumb {
   }
 }
 
+/* ══════════════════════════════════════════════════════════════════════════
+   FIX INTELIGENTE: Back-bar compacto + Auto-hide en scroll
+   AGREGAR A css/styles.css (reemplaza los estilos existentes de .back-bar)
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Back-bar base: más compacto */
+.back-bar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--navy);
+  padding: 8px 16px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.back-bar h2 {
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  flex: 1;
+  text-align: center;
+  margin: 0;
+}
+
+.back-bar .back-btn,
+.back-bar button {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-family: inherit;
+  min-height: 36px;
+  transition: background 0.2s;
+}
+
+.back-bar .back-btn:active,
+.back-bar button:active {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.back-bar svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Estado oculto (scroll down) */
+.back-bar.hidden {
+  transform: translateY(-100%);
+}
+
+/* Móvil: aún más compacto + auto-hide */
+@media (max-width: 600px) {
+  .back-bar {
+    padding: 6px 12px;
+    min-height: 40px;
+  }
+  
+  .back-bar h2 {
+    font-size: 15px;
+    padding-right: 0;
+  }
+  
+  .back-bar .back-btn,
+  .back-bar button {
+    padding: 4px 8px;
+    font-size: 13px;
+    min-height: 32px;
+  }
+  
+  .back-bar svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+/* Ajustar espaciado del contenido */
+.screen {
+  padding-top: 0;
+}
+
+.screen .container {
+  padding-top: 12px;
+}
+
+@media (max-width: 600px) {
+  .screen .container {
+    padding-top: 8px;
+  }
+  
+  .card {
+    margin-bottom: 12px;
+  }
+  
+  .action-bar {
+    margin-bottom: 10px;
+    gap: 6px;
+  }
+}
