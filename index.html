@@ -484,120 +484,325 @@
   </div>
 
   <!-- ─── PANTALLA: CAPACIDAD ─── -->
-  <div id="screen-capacidad" class="screen">
-    <div class="back-bar">
-      <button class="btn-back" onclick="showScreen('menu')">‹ Menú</button>
-      <h2>Capacidad de Pago</h2>
+  <section id="screen-capacidad" class="screen">
+  <div class="back-bar">
+    <button onclick="navigateTo('menu')" class="back-btn">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M15 18l-6-6 6-6"/>
+      </svg>
+      Menú
+    </button>
+    <h2>Capacidad de Pago</h2>
+  </div>
+
+  <span id="hdrDate" style="display:none"></span>
+
+  <div class="container">
+
+    <!-- ACTION BAR -->
+    <div class="action-bar">
+      <div id="cap-savedBadge" style="display:none;font-size:11px;color:#28a745;align-items:center;gap:5px;background:#e8f9ef;border-radius:6px;padding:5px 10px">
+        ✓ Sesión guardada automáticamente
+      </div>
+      <button class="btn btn-outline" onclick="cap_clearForm()">🗑 &nbsp;Limpiar formulario</button>
+      <button class="btn btn-primary" onclick="cap_calcular()">⟳ &nbsp;Recalcular</button>
+      <button class="btn btn-accent" onclick="window.print()">🖨 &nbsp;Imprimir / PDF</button>
     </div>
-    <div class="container">
+
+    <!-- INPUTS ROW -->
+    <div class="grid-2" style="margin-bottom:18px;">
+
+      <!-- DATOS DEL CLIENTE -->
       <div class="card">
-        <div class="card-title">👤 Cliente</div>
-        <div class="field-row">
+        <div class="card-title">👤 Datos del Cliente</div>
+        <div class="grid-2">
           <div class="field">
-            <label>Nombre</label>
-            <input type="text" id="cap-nombre" placeholder="Nombre del cliente" oninput="cap_calcular()">
+            <label>Nombre del Cliente</label>
+            <input type="text" id="cap-nombre" placeholder="Ej. Juan Pérez" oninput="cap_calcular()" />
           </div>
           <div class="field">
-            <label>Fecha</label>
-            <input type="date" id="cap-fecha">
+            <label>Nacionalidad</label>
+            <input type="text" id="cap-nacionalidad" placeholder="Ej. Dominicano" oninput="cap_calcular()" />
+          </div>
+          <div class="field">
+            <label>Asesor / Agente</label>
+            <input type="text" id="cap-asesor" placeholder="Tu nombre" oninput="cap_calcular()" />
+          </div>
+          <div class="field">
+            <label>Fecha del Análisis</label>
+            <input type="date" id="cap-fecha" oninput="cap_calcular()" />
           </div>
         </div>
       </div>
 
+      <!-- CAPACIDAD FINANCIERA -->
       <div class="card">
-        <div class="card-title">💰 Capacidad financiera</div>
-        <div class="field-row">
+        <div class="card-title">💰 Capacidad Financiera</div>
+        <div class="grid-2">
+          <div class="field">
+            <label>Capital Disponible (USD$)</label>
+            <div class="input-group">
+              <input type="text" id="cap-capital" value="30,000" inputmode="numeric"
+                     onfocus="unFmt(this)" onblur="fmtField(this); cap_calcular()" oninput="cap_calcular()" />
+              <div class="badge">USD$</div>
+            </div>
+          </div>
           <div class="field">
             <label>Flujo Mensual (USD$)</label>
-            <div class="pw"><span class="pfx">$</span>
-              <input type="number" id="cap-flujo" placeholder="0" oninput="cap_calcular()">
+            <div class="input-group">
+              <input type="text" id="cap-flujoMensual" value="1,000" inputmode="numeric"
+                     onfocus="unFmt(this)" onblur="fmtField(this); cap_calcular()" oninput="cap_calcular()" />
+              <div class="badge">USD$</div>
             </div>
           </div>
           <div class="field">
-            <label>Dinero en mano (USD$)</label>
-            <div class="pw"><span class="pfx">$</span>
-              <input type="number" id="cap-dinero" placeholder="0" oninput="cap_calcular()">
-            </div>
-          </div>
-        </div>
-        <div class="field-row">
-          <div class="field">
-            <label>Inmueble propio (USD$)</label>
-            <div class="pw"><span class="pfx">$</span>
-              <input type="number" id="cap-inmueble" placeholder="0" oninput="cap_calcular()">
+            <label>Ingreso Extraordinario / Año (USD$)</label>
+            <div class="input-group">
+              <input type="text" id="cap-extraordinario" value="6,000" inputmode="numeric"
+                     onfocus="unFmt(this)" onblur="fmtField(this); cap_calcular()" oninput="cap_calcular()" />
+              <div class="badge">USD$</div>
             </div>
           </div>
           <div class="field">
-            <label>Otros activos (USD$)</label>
-            <div class="pw"><span class="pfx">$</span>
-              <input type="number" id="cap-otros" placeholder="0" oninput="cap_calcular()">
+            <label>Venta de Inmueble (USD$)</label>
+            <div class="input-group">
+              <input type="text" id="cap-ventaInmueble" value="0" inputmode="numeric"
+                     onfocus="unFmt(this)" onblur="fmtField(this); cap_calcular()" oninput="cap_calcular()" />
+              <div class="badge">USD$</div>
             </div>
+            <div class="hint">Valor estimado de propiedad a liquidar</div>
           </div>
         </div>
       </div>
 
-      <div class="sum-grid">
-        <div class="sum-card sc-blue">
-          <div class="sl">12 meses</div>
-          <div class="sv" id="cap-metric-12">—</div>
-          <div class="ss">Capacidad total</div>
-        </div>
-        <div class="sum-card sc-cyan">
-          <div class="sl">24 meses</div>
-          <div class="sv" id="cap-metric-24">—</div>
-          <div class="ss">Capacidad total</div>
-        </div>
-        <div class="sum-card sc-gold">
-          <div class="sl">36 meses</div>
-          <div class="sv" id="cap-metric-36">—</div>
-          <div class="ss">Capacidad total</div>
-        </div>
-        <div class="sum-card sc-green">
-          <div class="sl">48 meses</div>
-          <div class="sv" id="cap-metric-48">—</div>
-          <div class="ss">Capacidad total</div>
-        </div>
-      </div>
+    </div>
 
-      <div class="card">
-        <div class="card-title">📊 Tabla de capacidades</div>
-        <p style="font-size:12px;color:var(--gray-500);margin-bottom:12px">
-          Toca cualquier celda para ver los detalles de esa configuración.
-        </p>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>% del flujo</th>
-                <th>12 meses</th>
-                <th>24 meses</th>
-                <th>36 meses</th>
-                <th>48 meses</th>
-              </tr>
-            </thead>
-            <tbody id="cap-tabla-body"></tbody>
-          </table>
-        </div>
-      </div>
-
-      <div id="cap-panel" class="card" style="display:none;background:linear-gradient(135deg,var(--navy-deep),var(--navy));color:white;border:none">
-        <div class="card-title" style="color:white;border-color:var(--celeste)">
-          🎯 Detalle de selección
-          <button onclick="cap_cerrarPanel()" style="margin-left:auto;background:rgba(255,255,255,0.1);border:none;color:white;width:28px;height:28px;border-radius:6px">×</button>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:14px;line-height:1.7">
-          <div><span style="opacity:0.6">Cuota mensual:</span><br><strong style="font-size:16px" id="cap-panel-cuota">—</strong></div>
-          <div><span style="opacity:0.6">Período:</span><br><strong style="font-size:16px"><span id="cap-panel-meses">—</span> meses</strong></div>
-          <div><span style="opacity:0.6">Acumulado en cuotas:</span><br><strong style="font-size:16px;color:var(--celeste-soft)" id="cap-panel-acum">—</strong></div>
-          <div><span style="opacity:0.6">Capacidad total:</span><br><strong style="font-size:16px;color:var(--celeste-soft)" id="cap-panel-total">—</strong></div>
-          <div style="grid-column:1/-1;padding-top:12px;border-top:1px solid rgba(255,255,255,0.15)">
-            <span style="opacity:0.6">Inmueble alcanzable (asumiendo 70% financiamiento):</span><br>
-            <strong style="font-size:18px;color:var(--dorado-soft)" id="cap-panel-property">—</strong>
-          </div>
+    <!-- TASA DE CAMBIO -->
+    <div class="card" style="margin-bottom:18px;">
+      <div class="card-title">💱 Tasa de Cambio &nbsp; RD$ / USD$</div>
+      <div class="tasa-row">
+        <input type="range" id="cap-tasaSlider" min="55" max="80" value="61.4" step="0.1"
+               oninput="document.getElementById('cap-tasa').value=this.value; cap_calcular();" style="flex:1;min-width:180px;" />
+        <div class="tasa-input-wrap">
+          <span style="font-size:13px;color:#94a3b8;">RD$</span>
+          <input type="number" id="cap-tasa" value="61.4" min="55" max="80" step="0.1"
+                 oninput="document.getElementById('cap-tasaSlider').value=this.value; cap_calcular();" />
+          <span style="font-size:13px;color:#94a3b8;">por USD$ 1</span>
         </div>
       </div>
     </div>
-  </div>
+
+    <!-- SUMMARY STRIP -->
+    <div class="summary-strip">
+      <div class="sum-client">
+        <h2 id="sumNombre">— Nombre del Cliente —</h2>
+        <p id="sumMeta">Nacionalidad · Consulta: — · Asesor: —</p>
+      </div>
+      <div class="sum-div"></div>
+      <div class="sum-kpi">
+        <div class="val" id="sumCapital">$0</div>
+        <div class="lbl">Capital disponible</div>
+      </div>
+      <div class="sum-div"></div>
+      <div class="sum-kpi">
+        <div class="val" id="sumFlujo">$0</div>
+        <div class="lbl">Flujo mensual</div>
+      </div>
+      <div class="sum-div"></div>
+      <div class="sum-kpi">
+        <div class="val" id="sumMax">$0</div>
+        <div class="lbl">Capacidad máx. (48m / 30%)</div>
+      </div>
+    </div>
+
+    <!-- ACUMULADO POR PERÍODO -->
+    <div class="section-title">📊 Acumulado por Período</div>
+    <div class="grid-4" style="margin-bottom:20px;">
+      <div class="metric m12">
+        <div class="period">12 meses</div>
+        <div class="amount" id="ac12">$0</div>
+        <div class="year" id="yr12">—</div>
+      </div>
+      <div class="metric m24">
+        <div class="period">24 meses</div>
+        <div class="amount" id="ac24">$0</div>
+        <div class="year" id="yr24">—</div>
+      </div>
+      <div class="metric m36">
+        <div class="period">36 meses</div>
+        <div class="amount" id="ac36">$0</div>
+        <div class="year" id="yr36">—</div>
+      </div>
+      <div class="metric m48">
+        <div class="period">48 meses</div>
+        <div class="amount" id="ac48">$0</div>
+        <div class="year" id="yr48">—</div>
+      </div>
+    </div>
+
+    <!-- CAPACIDAD TABLE + BAR CHART -->
+    <div class="grid-2" style="margin-bottom:18px;">
+
+      <div class="card">
+        <div class="card-title">🏠 Capacidad de Compra (USD$)</div>
+        <p style="font-size:11px;color:#94a3b8;margin-bottom:10px;">
+          👆 Haz clic en cualquier monto para ver la Cuota Estimada
+        </p>
+        <table class="cap-table">
+          <thead>
+            <tr>
+              <th>Esquema</th>
+              <th>12 meses</th><th>24 meses</th><th>36 meses</th><th>48 meses</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- 50% row -->
+            <tr>
+              <td><span class="pill p50">Al 50%</span></td>
+              <td class="clickable" data-meses="12" data-pct="0.5" data-label="Al 50%" onclick="cellClick(this)" id="t50_12">—</td>
+              <td class="clickable" data-meses="24" data-pct="0.5" data-label="Al 50%" onclick="cellClick(this)" id="t50_24">—</td>
+              <td class="clickable" data-meses="36" data-pct="0.5" data-label="Al 50%" onclick="cellClick(this)" id="t50_36">—</td>
+              <td class="clickable" data-meses="48" data-pct="0.5" data-label="Al 50%" onclick="cellClick(this)" id="t50_48">—</td>
+            </tr>
+            <!-- 40% row -->
+            <tr>
+              <td><span class="pill p40">Al 40%</span></td>
+              <td class="clickable" data-meses="12" data-pct="0.4" data-label="Al 40%" onclick="cellClick(this)" id="t40_12">—</td>
+              <td class="clickable" data-meses="24" data-pct="0.4" data-label="Al 40%" onclick="cellClick(this)" id="t40_24">—</td>
+              <td class="clickable" data-meses="36" data-pct="0.4" data-label="Al 40%" onclick="cellClick(this)" id="t40_36">—</td>
+              <td class="clickable" data-meses="48" data-pct="0.4" data-label="Al 40%" onclick="cellClick(this)" id="t40_48">—</td>
+            </tr>
+            <!-- 30% row -->
+            <tr>
+              <td><span class="pill p30">Al 30%</span></td>
+              <td class="clickable" data-meses="12" data-pct="0.3" data-label="Al 30%" onclick="cellClick(this)" id="t30_12">—</td>
+              <td class="clickable" data-meses="24" data-pct="0.3" data-label="Al 30%" onclick="cellClick(this)" id="t30_24">—</td>
+              <td class="clickable" data-meses="36" data-pct="0.3" data-label="Al 30%" onclick="cellClick(this)" id="t30_36">—</td>
+              <td class="clickable" data-meses="48" data-pct="0.3" data-label="Al 30%" onclick="cellClick(this)" id="t30_48">—</td>
+            </tr>
+            <!-- Acumulado row -->
+            <tr class="row-accum">
+              <td style="color:#7a8799;">Acumulado</td>
+              <td id="ta12">—</td><td id="ta24">—</td><td id="ta36">—</td><td id="ta48">—</td>
+            </tr>
+          </tbody>
+        </table>
+        <div style="font-size:11px;color:#94a3b8;margin-top:10px;">
+          ✱ Capacidad = Acumulado ÷ % de enganche
+        </div>
+      </div>
+
+      <!-- BAR CHART -->
+      <div class="card">
+        <div class="card-title">📈 Rango de Propiedades Alcanzables</div>
+        <div class="chart-wrap" style="height:280px;">
+          <canvas id="chartCapacidad"></canvas>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── CUOTA ESTIMADA PANEL ── -->
+    <div id="cuotaPanel" style="display:none;background:linear-gradient(135deg,#f0f6ff,#fff);border:2px solid #4e9af1;border-radius:12px;padding:18px;margin-bottom:16px;position:relative">
+      <div class="cq-header" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <div>
+          <div class="cq-title" style="font-size:14px;font-weight:700;color:#1a3a5c;display:flex;align-items:center;gap:8px">
+            📋 Cuota Estimada durante el Plan de Pago
+          </div>
+          <div class="cq-sub" id="cqScenario" style="font-size:12px;color:#7a8799;margin-top:2px">
+            Selecciona un escenario en la tabla de arriba
+          </div>
+        </div>
+        <button class="cq-close" onclick="hideCuota()" title="Cerrar" 
+                style="background:none;border:none;font-size:18px;cursor:pointer;color:#7a8799">✕</button>
+      </div>
+      <div class="cq-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+        <div class="cq-item" style="background:#fff;border:1px solid var(--borde);border-radius:10px;padding:11px 13px">
+          <div class="cq-lbl" style="font-size:10px;font-weight:700;color:#7a8799;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">
+            Valor de la Propiedad
+          </div>
+          <div class="cq-val" id="cqPropiedad" style="font-size:15px;font-weight:700;color:#1a3a5c">—</div>
+          <div class="cq-rd" id="cqPropiedadRD" style="font-size:11px;color:#7a8799;margin-top:2px">—</div>
+        </div>
+        <div class="cq-item" style="background:#fff;border:1px solid var(--borde);border-radius:10px;padding:11px 13px">
+          <div class="cq-lbl" style="font-size:10px;font-weight:700;color:#7a8799;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">
+            Reserva 10%
+          </div>
+          <div class="cq-val" id="cqReserva" style="font-size:15px;font-weight:700;color:#1a3a5c">—</div>
+          <div class="cq-rd" id="cqReservaRD" style="font-size:11px;color:#7a8799;margin-top:2px">—</div>
+        </div>
+        <div class="cq-item" style="background:#fff;border:1px solid var(--borde);border-radius:10px;padding:11px 13px">
+          <div class="cq-lbl" id="cqEngancheLbl" style="font-size:10px;font-weight:700;color:#7a8799;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">
+            Plan de Pago —
+          </div>
+          <div class="cq-val" id="cqEnganche" style="font-size:15px;font-weight:700;color:#1a3a5c">—</div>
+          <div class="cq-rd" id="cqEngancheRD" style="font-size:11px;color:#7a8799;margin-top:2px">—</div>
+        </div>
+        <div class="cq-item" style="background:#fff;border:1px solid var(--borde);border-radius:10px;padding:11px 13px">
+          <div class="cq-lbl" style="font-size:10px;font-weight:700;color:#7a8799;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">
+            Contra Entrega
+          </div>
+          <div class="cq-val" id="cqPlan" style="font-size:15px;font-weight:700;color:#1a3a5c">—</div>
+          <div class="cq-rd" id="cqPlanRD" style="font-size:11px;color:#7a8799;margin-top:2px">—</div>
+        </div>
+      </div>
+      <div class="cq-result" style="background:#1a3a5c;border-radius:10px;padding:14px 18px;color:#fff;text-align:center">
+        <div class="cq-r-label" style="font-size:11px;opacity:.7;text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px">
+          Cuota Mensual Estimada durante la construcción
+        </div>
+        <div class="cq-r-usd" id="cqCuotaUSD" style="font-size:26px;font-weight:900">$0</div>
+        <div class="cq-r-rd" id="cqCuotaRD" style="font-size:13px;opacity:.75;margin-top:3px">RD$ 0</div>
+        <div class="cq-r-note" id="cqNota" style="font-size:10px;opacity:.55;margin-top:7px">
+          — / mes · Período: — meses
+        </div>
+      </div>
+    </div>
+
+    <!-- ACCUMULATION CHART -->
+    <div class="section-title">📉 Proyección de Acumulación</div>
+    <div class="card" style="margin-bottom:20px;">
+      <div class="chart-wrap" style="height:230px;">
+        <canvas id="chartAcumulado"></canvas>
+      </div>
+    </div>
+
+    <!-- RD$ TABLE -->
+    <div class="section-title">🇩🇴 Equivalencia en Pesos Dominicanos (RD$)</div>
+    <div class="card" style="margin-bottom:20px;">
+      <table class="rd-table">
+        <thead>
+          <tr>
+            <th>Esquema</th>
+            <th>12 meses</th><th>24 meses</th><th>36 meses</th><th>48 meses</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="pill p50">Al 50%</span></td>
+            <td id="r50_12">—</td><td id="r50_24">—</td><td id="r50_36">—</td><td id="r50_48">—</td>
+          </tr>
+          <tr>
+            <td><span class="pill p40">Al 40%</span></td>
+            <td id="r40_12">—</td><td id="r40_24">—</td><td id="r40_36">—</td><td id="r40_48">—</td>
+          </tr>
+          <tr>
+            <td><span class="pill p30">Al 30%</span></td>
+            <td id="r30_12">—</td><td id="r30_24">—</td><td id="r30_36">—</td><td id="r30_48">—</td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="font-size:11px;color:#7a8799;margin-top:10px;">
+        ✱ Calculado con la tasa de cambio indicada arriba · Solo referencial
+      </div>
+    </div>
+
+    <p class="footnote">
+      Herramienta de uso referencial exclusivamente. Los valores son estimaciones basadas en los datos ingresados y no constituyen oferta ni garantía de financiamiento.
+      &nbsp;·&nbsp; <strong>Juan José Abreu</strong> · Asesor Inmobiliario · República Dominicana
+    </p>
+
+  </div><!-- /container -->
+</section>
 
   <!-- ─── PANTALLA: PRÉSTAMO ─── -->
   <div id="screen-prestamo" class="screen">
