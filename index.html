@@ -179,309 +179,347 @@
     </div>
   </div>
 
-  <!-- ─── PANTALLA: PLAN DE PAGO ─── -->
-  <div id="screen-plan" class="screen">
-    <div class="back-bar">
-      <button class="btn-back" onclick="showScreen('menu')">‹ Menú</button>
-      <h2>Plan de Pago</h2>
-      <button class="bar-action" onclick="guardarCotizacion()">💾 Guardar</button>
+  <!-- SCREEN: PLAN DE PAGO -->
+<div id="screen-plan" class="screen">
+  <div class="back-bar">
+    <button onclick="showScreen('menu')">‹ Menú</button>
+    <h2>Plan de Pago</h2>
+  </div>
+  
+  <div class="container">
+
+    <div id="plan-alert-pct" style="display:none;padding:10px 14px;border-radius:7px;font-size:13px;margin-bottom:14px;background:#fef9c3;border:1px solid #fde047;color:#854d0e;align-items:center;gap:8px">
+      ⚠️ Los porcentajes del esquema de pago no suman 100%. Revise los valores.
     </div>
 
-    <div class="container">
-      <div class="summary-strip">
-        <div class="sum-client">
-          <h2 id="ph-cliente">—</h2>
-          <p id="ph-proyecto">—</p>
-        </div>
-        <div class="sum-div"></div>
-        <div class="sum-kpi">
-          <div class="val" id="ph-precio">—</div>
-          <div class="lbl">Precio</div>
-        </div>
-        <div class="sum-div"></div>
-        <div class="sum-kpi">
-          <div class="val" id="ph-esquema">—</div>
-          <div class="lbl">Esquema</div>
-        </div>
-      </div>
-
+    <!-- CLIENTE + PROPIEDAD -->
+    <div class="g2">
       <div class="card">
         <div class="card-title">
-          👤 Datos del cliente
-          <button class="btn btn-ghost" style="margin-left:auto;font-size:11px;padding:4px 10px" onclick="nuevaCotizacion()">+ Nueva</button>
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          Datos del Cliente
         </div>
-        <div class="field">
-          <label>Cliente</label>
-          <input type="text" id="cliente" placeholder="Nombre completo" oninput="recalcular()">
-        </div>
-        <div class="field-row">
+        <div class="g2">
           <div class="field">
-            <label>Proyecto</label>
-            <input type="text" id="proyecto" placeholder="Nombre del proyecto" oninput="recalcular()">
+            <label>Nombre del Cliente</label>
+            <input type="text" id="plan-cliente" placeholder="Ej. Juan Pérez">
           </div>
-          <div class="field">
-            <label>Unidad</label>
-            <input type="text" id="unidad" placeholder="Ej. F3, Penthouse A-7">
-          </div>
-        </div>
-        <div class="field-row">
           <div class="field">
             <label>Nacionalidad</label>
-            <select id="nacionalidad">
-              <option value="Dominicano">Dominicano</option>
-              <option value="Extranjero">Extranjero</option>
-              <option value="Dominicano residente exterior">Dominicano residente exterior</option>
+            <select id="plan-nacionalidad">
+              <option>Dominicano</option><option>Estadounidense</option><option>Canadiense</option>
+              <option>Europeo</option><option>Latinoamericano</option><option>Otro</option>
             </select>
           </div>
-          <div class="field">
-            <label>Inmueble propio (USD$)</label>
-            <input type="number" id="inmueble" placeholder="0" oninput="recalcular()">
-          </div>
         </div>
-        <div class="field-row">
+        <div class="g2">
           <div class="field">
             <label>Flujo Mensual (USD$)</label>
-            <div class="pw"><span class="pfx">$</span>
-              <input type="text" id="flujoMensual" placeholder="0" inputmode="decimal" oninput="cleanNum(this);recalcular()" onblur="fmtNum(this)">
+            <div class="pw">
+              <span class="pfx">$</span>
+              <input type="text" id="plan-flujoMensual" value="" placeholder="0" style="padding-left:26px" onfocus="cleanNum(this)">
             </div>
           </div>
           <div class="field">
             <label>Dinero en Mano (USD$)</label>
-            <div class="pw"><span class="pfx">$</span>
-              <input type="text" id="dineroMano" placeholder="0" inputmode="decimal" oninput="cleanNum(this);recalcular()" onblur="fmtNum(this)">
+            <div class="pw">
+              <span class="pfx">$</span>
+              <input type="text" id="plan-dineroMano" value="" placeholder="0" style="padding-left:26px" onfocus="cleanNum(this)">
             </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-title">
-          🏠 Datos del inmueble
-          <span style="margin-left:auto;font-weight:500;text-transform:none;letter-spacing:normal;font-size:11px;color:var(--gray-500)">
-            Tasa USD/RD$:
-          </span>
-          <span class="tasa-badge" id="tasa-badge" onclick="fetchTasaCambio()">🔄 Actualizar</span>
-        </div>
-        <div class="field-row">
-          <div class="field">
-            <label>Precio venta (USD$)</label>
-            <div class="pw"><span class="pfx">$</span>
-              <input type="text" id="precioUSD" placeholder="0" inputmode="decimal" oninput="cleanNum(this);recalcular()" onblur="fmtNum(this)">
-            </div>
-          </div>
-          <div class="field">
-            <label>Tasa de cambio</label>
-            <input type="number" id="tasaCambio" value="60.75" step="0.01" oninput="recalcular()">
-            <div style="font-size:10px;color:var(--gray-400);margin-top:3px" id="tasa-fuente">Tasa Banreservas (referencial)</div>
-          </div>
-        </div>
-        <div class="field-row">
-          <div class="field">
-            <label>Reserva fija (USD$)</label>
-            <input type="number" id="reservaFija" value="5000" oninput="recalcular()">
-            <div style="font-size:10px;color:var(--gray-500);margin-top:3px" id="lbl-res-pct">—</div>
-          </div>
-          <div class="field">
-            <label>Tipo de cuota</label>
-            <div class="tog">
-              <button class="tog-btn active" id="btn-m" onclick="setMetodo('Mensual')">Mensual</button>
-              <button class="tog-btn" id="btn-t" onclick="setMetodo('Trimestral')">Trimestral</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-title">
-          📅 Esquema de pago
-          <span class="pct-badge ok" id="pct-total" style="margin-left:auto">100%</span>
-        </div>
-
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
-          <span style="font-size:11px;color:var(--gray-500);font-weight:600;align-self:center">Presets:</span>
-          <button class="preset-btn" onclick="aplicarPreset(10,20,this)">10-20-70</button>
-          <button class="preset-btn" onclick="aplicarPreset(10,25,this)">10-25-65</button>
-          <button class="preset-btn active" onclick="aplicarPreset(10,30,this)">10-30-60</button>
-          <button class="preset-btn" onclick="aplicarPreset(10,35,this)">10-35-55</button>
-          <button class="preset-btn" onclick="aplicarPreset(10,40,this)">10-40-50</button>
-        </div>
-
-        <div class="pct-grid">
-          <div class="pct-box gold">
-            <div class="pb-label">Inicial</div>
-            <div class="pb-amount-big" id="lbl-sep-usd">—</div>
-            <div class="pb-pct-row">
-              <input class="pb-pct-input" type="number" id="pctInicial" value="10" step="0.01" oninput="onPctChange()">
-              <span class="pb-pct-sym">%</span>
-            </div>
-          </div>
-          <div class="pct-box blue">
-            <div class="pb-label">Plan</div>
-            <div class="pb-amount-big" id="lbl-plan-usd">—</div>
-            <div class="pb-pct-row">
-              <input class="pb-pct-input" type="number" id="pctPlan" value="30" step="0.01" oninput="onPctChange()">
-              <span class="pb-pct-sym">%</span>
-            </div>
-          </div>
-          <div class="pct-box green">
-            <div class="pb-label">Contra Entrega</div>
-            <div class="pb-amount-big" id="lbl-entr-usd">—</div>
-            <div class="pb-pct-row">
-              <input class="pb-pct-input" type="number" id="pctEntrega" value="60" step="0.01" readonly>
-              <span class="pb-pct-sym">%</span>
-            </div>
-          </div>
-          <div class="pct-box">
-            <div class="pb-label">Cuotas</div>
-            <div class="pb-amount-big" id="cant-cuotas-display" style="color:var(--celeste)">
-              <input type="number" id="cantCuotas" value="0" readonly style="text-align:center;border:none;background:transparent;font-size:18px;font-weight:800;color:var(--celeste);width:60px">
-            </div>
-            <div class="pb-tiny">Auto-calculado</div>
-          </div>
-        </div>
-
-        <div id="alert-pct" style="display:none;background:var(--danger-bg);border:1px solid #fca5a5;border-radius:8px;padding:8px 12px;font-size:12px;color:var(--danger);margin-bottom:10px">
-          ⚠️ Los porcentajes deben sumar 100%
-        </div>
-
-        <div class="field-row">
-          <div class="field">
-            <label>Fecha de reserva</label>
-            <input type="date" id="fechaInicio" oninput="document.getElementById('fechaFirma').value=firmaDefault(this.value);recalcularCuotas()">
-          </div>
-          <div class="field">
-            <label>Fecha de firma</label>
-            <input type="date" id="fechaFirma" oninput="recalcularCuotas()">
           </div>
         </div>
         <div class="field">
-          <label>Fecha de entrega</label>
-          <input type="date" id="fechaEntrega" oninput="recalcularCuotas()">
+          <label>Inmueble Propio Estimado (USD$)</label>
+          <div class="pw">
+            <span class="pfx">$</span>
+            <input type="number" id="plan-inmueble" value="" placeholder="0">
+          </div>
         </div>
-      </div>
-
-      <div class="sum-grid">
-        <div class="sum-card sc-gold">
-          <div class="sl">💰 Inicial</div>
-          <div class="sv" id="sv-ini">—</div>
-          <div class="ss" id="ss-ini">—</div>
-        </div>
-        <div class="sum-card sc-blue">
-          <div class="sl" id="lbl-cuota-tipo">Cuota Mensual</div>
-          <div class="sv" id="sv-cuota">—</div>
-          <div class="ss" id="ss-cuota">—</div>
-        </div>
-        <div class="sum-card sc-cyan">
-          <div class="sl">🏗 Plan total</div>
-          <div class="sv" id="sv-obra">—</div>
-          <div class="ss" id="ss-obra">—</div>
-        </div>
-        <div class="sum-card sc-green">
-          <div class="sl">🏠 Contra Entrega</div>
-          <div class="sv" id="sv-entr">—</div>
-          <div class="ss" id="ss-entr">—</div>
-        </div>
+        <div id="plan-cap-wrap" class="cap-wrap"></div>
       </div>
 
       <div class="card">
-        <div class="card-title">📊 Capacidad de pago</div>
-        <div class="excedente-box" id="excedente-box" style="display:none"></div>
-        <div class="cap-wrap" id="cap-wrap"></div>
-      </div>
-
-      <div class="card">
-        <div class="card-title">⭐ Pagos extraordinarios</div>
-
-        <div class="hom-section">
-          <div class="hom-label">💎 Pago homogéneo (mismo monto en varias cuotas)</div>
-          <div class="hom-row">
-            <div class="field">
-              <label>Monto USD$ por cuota</label>
-              <div class="pw"><span class="pfx">$</span>
-                <input type="text" id="extra-hom-monto" placeholder="0" inputmode="decimal" oninput="cleanNum(this);recalcular()" onblur="fmtNum(this)">
-              </div>
-            </div>
-            <div class="field">
-              <label>Cuotas (separadas por coma)</label>
-              <input type="text" id="extra-hom-cuotas" placeholder="Ej: 6, 12, 18, 24" oninput="recalcular()">
+        <div class="card-title">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1z"/><path d="M9 21V12h6v9"/></svg>
+          Datos de la Propiedad
+        </div>
+        <div class="g2">
+          <div class="field">
+            <label>Proyecto</label>
+            <input type="text" id="plan-proyecto" placeholder="Ej. Terra Living">
+          </div>
+          <div class="field">
+            <label>Unidad</label>
+            <input type="text" id="plan-unidad" placeholder="Ej. F3 · 2 Hab.">
+          </div>
+        </div>
+        <div class="g2">
+          <div class="field">
+            <label>Precio de Cierre (USD$)</label>
+            <div class="pw">
+              <span class="pfx">$</span>
+              <input type="text" id="plan-precioUSD" value="" placeholder="0" style="padding-left:26px" onfocus="cleanNum(this)">
             </div>
           </div>
-          <div id="hom-summary"></div>
-        </div>
-
-        <div class="extras-header">
-          <div class="extras-label">✨ Pagos individuales (cuotas específicas)</div>
-          <button class="btn-add-extra" onclick="agregarPagoExtra()">+ Agregar</button>
-        </div>
-        <div id="lista-extras"></div>
-        <div id="extras-empty" style="text-align:center;padding:16px;color:var(--gray-400);font-size:12px">
-          Sin pagos extras individuales
-        </div>
-        <div id="extras-summary"></div>
-      </div>
-
-      <div class="card">
-        <div class="card-title">🏦 Banco (financiamiento contra entrega)</div>
-        <div class="banco-wrap">
-          <div class="banco-box">
-            <div class="bl">Cuota mensual estimada</div>
-            <div class="bv" id="bv-usd">—</div>
-            <div class="bs" id="bs-info">—</div>
-          </div>
-          <div class="banco-box">
-            <div class="bl">Equivalente RD$</div>
-            <div class="bv" id="bv-rd">—</div>
-            <div class="bs">Tasa de cambio aplicada</div>
-          </div>
-          <div class="banco-box">
-            <div class="bl">Tasa banco %</div>
-            <input type="number" id="tasaBanco" class="banco-input" value="14.6" step="0.1" oninput="recalcular()">
-            <div class="bs">Tasa hipotecaria anual</div>
-          </div>
-          <div class="banco-box">
-            <div class="bl">Plazo (años)</div>
-            <input type="number" id="anosBanco" class="banco-input" value="20" oninput="recalcular()">
-            <div class="bs">Período de financiamiento</div>
+          <div class="field">
+            <label style="display:flex;align-items:center;gap:6px">
+              Tasa de Cambio (RD$/USD)
+              <span id="plan-tasa-badge" class="tasa-badge">🔄 Actualizar</span>
+            </label>
+            <div class="sw">
+              <input type="number" id="plan-tasaCambio" value="60.75" step="0.25">
+              <span class="sfx">RD$</span>
+            </div>
+            <div id="plan-tasa-fuente" style="font-size:10px;color:#94a3b8;margin-top:3px"></div>
           </div>
         </div>
-      </div>
-
-      <div class="card">
-        <div class="card-title">📋 Cronograma completo</div>
-        <div class="action-bar">
-          <button class="btn btn-celeste" onclick="generarFichaPDF()">📄 PDF Cliente (WhatsApp)</button>
-          <button class="btn btn-outline" onclick="window.print()">🖨 Imprimir</button>
+        <div class="g2">
+          <div class="field">
+            <label>Fecha de Reserva</label>
+            <input type="date" id="plan-fechaInicio">
+          </div>
+          <div class="field">
+            <label>Fecha Firma Contrato <span style="font-weight:400;font-size:10px;text-transform:none;color:#94a3b8">(editable)</span></label>
+            <input type="date" id="plan-fechaFirma">
+          </div>
         </div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Fecha</th>
-                <th>Concepto</th>
-                <th>Base USD</th>
-                <th>Extra</th>
-                <th>Total USD</th>
-                <th>Equiv. RD$</th>
-                <th>Acum.</th>
-                <th>Saldo</th>
-              </tr>
-            </thead>
-            <tbody id="tabla-body"></tbody>
-          </table>
+        <div class="g2">
+          <div class="field">
+            <label>Fecha Estimada de Entrega</label>
+            <input type="date" id="plan-fechaEntrega">
+          </div>
+          <div class="field">
+            <label>Descripción / Notas</label>
+            <input type="text" id="plan-notas" placeholder="Ej. 2 Hab., amueblado, vista al mar...">
+          </div>
         </div>
-      </div>
-
-      <div class="card">
-        <div class="card-title">📝 Notas internas</div>
-        <textarea id="notas" rows="3" style="width:100%;padding:10px;border:1.5px solid var(--borde);border-radius:10px;font-family:inherit;font-size:13px;outline:none;resize:vertical" placeholder="Anotaciones privadas (no se incluyen en el PDF al cliente)"></textarea>
-      </div>
-
-      <div class="footnote">
-        Cotización referencial · J&V · MR. Home Asesores Inmobiliarios
       </div>
     </div>
+
+    <!-- ESQUEMA DE PAGO -->
+    <div class="card">
+      <div class="card-title">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 13h6M9 17h4"/></svg>
+        Esquema de Pago
+        <span style="font-weight:400;font-size:11px;color:#94a3b8;margin-left:auto">Presets:</span>
+        <button class="plan-preset-btn preset-btn" data-ini="10" data-plan="20">10-20-70</button>
+        <button class="plan-preset-btn preset-btn" data-ini="10" data-plan="25">10-25-65</button>
+        <button class="plan-preset-btn preset-btn" data-ini="10" data-plan="30">10-30-60</button>
+        <button class="plan-preset-btn preset-btn" data-ini="10" data-plan="35">10-35-55</button>
+        <button class="plan-preset-btn preset-btn" data-ini="10" data-plan="40">10-40-50</button>
+      </div>
+
+      <div class="pct-grid">
+        <!-- RESERVA -->
+        <div class="pct-box gold">
+          <div class="pb-label">🔑 Reserva</div>
+          <div class="pw" style="margin:0 auto;max-width:150px">
+            <span class="pfx">$</span>
+            <input type="number" id="plan-reservaFija" value="5000" step="500" style="width:100%;padding:4px 4px 4px 22px;font-size:20px;font-weight:800;color:var(--navy);border:none;border-bottom:1.5px dashed #cbd5e1;background:transparent;outline:none;text-align:center;">
+          </div>
+          <div class="pb-small-sub" id="plan-lbl-res-pct">— % del precio</div>
+          <div class="pb-tiny">Monto fijo en USD$</div>
+        </div>
+
+        <!-- SEPARACIÓN -->
+        <div class="pct-box blue">
+          <div class="pb-label">📝 Separación</div>
+          <div class="pb-amount-big" id="plan-lbl-sep-usd">USD$ —</div>
+          <div class="pb-pct-row">
+            <input type="number" id="plan-pctInicial" value="10" step="0.5" min="0" max="99" class="pb-pct-input">
+            <span class="pb-pct-sym">%</span>
+          </div>
+          <div class="pb-tiny">% inicial total (incl. reserva)</div>
+        </div>
+
+        <!-- PLAN DE PAGO -->
+        <div class="pct-box green">
+          <div class="pb-label">🏗️ Plan de Pago</div>
+          <div class="pb-amount-big" id="plan-lbl-plan-usd">USD$ —</div>
+          <div class="pb-pct-row">
+            <input type="number" id="plan-pctPlan" value="35" step="0.5" min="0" max="99" class="pb-pct-input">
+            <span class="pb-pct-sym">%</span>
+          </div>
+          <div class="pb-tiny">Durante construcción</div>
+        </div>
+
+        <!-- CONTRA ENTREGA -->
+        <div class="pct-box red">
+          <div class="pb-label">🏠 Contra Entrega</div>
+          <div class="pb-amount-big" id="plan-lbl-entr-usd">USD$ —</div>
+          <div class="pb-pct-row">
+            <input type="number" id="plan-pctEntrega" value="55" readonly class="pb-pct-input" style="color:#94a3b8;cursor:default">
+            <span class="pb-pct-sym">%</span>
+          </div>
+          <div class="pb-tiny">Auto: 100 − Inicial − Plan</div>
+        </div>
+      </div>
+
+      <div style="display:flex;justify-content:flex-end;align-items:center;gap:10px;margin-bottom:14px">
+        <span style="font-size:12px;color:#64748b">Total (Inicial% + Plan% + Entrega%):</span>
+        <span id="plan-pct-total" class="pct-badge ok">100.00%</span>
+      </div>
+
+      <hr class="dash">
+
+      <!-- MÉTODO / CUOTAS -->
+      <div class="g2" style="margin-bottom:12px">
+        <div class="field">
+          <label>Método de Pago</label>
+          <div class="tog">
+            <button class="tog-btn active" id="plan-btn-mensual">Mensual</button>
+            <button class="tog-btn" id="plan-btn-trimestral">Trimestral</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Cuotas (auto desde fechas)</label>
+          <input type="number" id="plan-cantCuotas" value="0" readonly style="background:#f8fafc;color:#475569;cursor:default;font-weight:700">
+        </div>
+      </div>
+
+      <hr class="dash">
+
+      <!-- EXCEDENTE -->
+      <div id="plan-excedente-box" class="excedente-box neutro" style="display:none"></div>
+
+      <div class="extras-label" style="margin-bottom:12px">💎 Pagos Extraordinarios <span style="font-size:10px;color:#94a3b8;font-weight:400;text-transform:none;letter-spacing:0">(reducen la cuota regular)</span></div>
+
+      <!-- HOMOGÉNEOS -->
+      <div class="hom-section">
+        <div class="hom-label">📋 Homogéneos — mismo monto en varias cuotas</div>
+        <div class="hom-row">
+          <div class="field">
+            <label>Monto Fijo por Cuota (USD$)</label>
+            <div style="position:relative">
+              <span style="position:absolute;left:9px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:13px;pointer-events:none">$</span>
+              <input type="text" id="plan-extra-hom-monto" placeholder="0" onfocus="cleanNum(this)" style="padding-left:22px;width:100%;padding-top:7px;padding-bottom:7px;border:1.5px solid #bae6fd;border-radius:7px;font-size:13px;outline:none;background:#fff">
+            </div>
+          </div>
+          <div class="field">
+            <label>Aplicar en Cuotas N° (ej: 6, 12, 24)</label>
+            <input type="text" id="plan-extra-hom-cuotas" placeholder="ej: 6, 12, 24" style="width:100%;padding:7px 10px;border:1.5px solid #bae6fd;border-radius:7px;font-size:13px;outline:none;background:#fff">
+          </div>
+        </div>
+        <div id="plan-hom-summary"></div>
+      </div>
+
+      <!-- NO HOMOGÉNEOS -->
+      <div class="extras-header">
+        <span class="extras-sub-label">📌 No Homogéneos — monto distinto por cuota</span>
+        <button class="btn-add-extra" id="plan-btn-agregar-extra">＋ Agregar pago</button>
+      </div>
+
+      <div id="plan-lista-extras"></div>
+      <div id="plan-extras-empty" style="font-size:12px;color:#94a3b8;padding:4px 0;display:block">
+        Sin pagos no homogéneos agregados.
+      </div>
+      <div id="plan-extras-summary"></div>
+    </div>
+
+    <!-- RESUMEN -->
+    <div class="sum-grid">
+      <div class="sum-card sc-dark">
+        <div class="sl">Inicial (Reserva + Sep.)</div>
+        <div class="sv" id="plan-sv-ini">—</div>
+        <div class="ss" id="plan-ss-ini">—</div>
+      </div>
+      <div class="sum-card sc-blue">
+        <div class="sl" id="plan-lbl-cuota-tipo">Cuota Mensual</div>
+        <div class="sv" id="plan-sv-cuota">—</div>
+        <div class="ss" id="plan-ss-cuota">—</div>
+      </div>
+      <div class="sum-card sc-green">
+        <div class="sl">Total Durante Obra</div>
+        <div class="sv" id="plan-sv-obra">—</div>
+        <div class="ss" id="plan-ss-obra">—</div>
+      </div>
+      <div class="sum-card sc-gold">
+        <div class="sl">Saldo Contra Entrega</div>
+        <div class="sv" id="plan-sv-entr">—</div>
+        <div class="ss" id="plan-ss-entr">—</div>
+      </div>
+    </div>
+
+    <!-- BANCO -->
+    <div class="card">
+      <div class="card-title">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+        Cuota Estimada Banco (Financiamiento del Saldo Contra Entrega)
+      </div>
+      <div class="banco-wrap">
+        <div class="banco-box">
+          <div class="bl">Cuota Banco USD$</div>
+          <div class="bv" id="plan-bv-usd">—</div>
+          <div class="bs" id="plan-bs-info">Capital — · Tasa — · — años</div>
+        </div>
+        <div class="banco-box">
+          <div class="bl">Cuota Banco RD$</div>
+          <div class="bv" id="plan-bv-rd">—</div>
+          <div class="bs">Equivalente en pesos dominicanos</div>
+        </div>
+        <div class="banco-box" style="flex:0.7">
+          <div class="bl">Tasa Anual (%)</div>
+          <div class="bv">
+            <input type="number" id="plan-tasaBanco" value="14.6" step="0.1" min="1" max="50" class="banco-input" style="width:80px">
+            <span style="font-size:14px;color:#64748b;font-weight:600">%</span>
+          </div>
+          <div class="bs">Tasa banco anual</div>
+        </div>
+        <div class="banco-box" style="flex:0.7">
+          <div class="bl">Plazo (años)</div>
+          <div class="bv">
+            <select id="plan-anosBanco" class="banco-input" style="width:auto">
+              <option>10</option><option>15</option><option value="20" selected>20</option>
+              <option>25</option><option>30</option>
+            </select>
+          </div>
+          <div class="bs">Años de financiamiento</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CRONOGRAMA -->
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <div class="card-title" style="margin-bottom:0;border:none;padding-bottom:0">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
+          Cronograma de Pagos
+        </div>
+        <div style="display:flex;gap:9px">
+          <button class="btn btn-outline" id="plan-btn-exportar-mrhome" style="background:#0f2644;color:#fff;border-color:#0f2644">🏢 Exportar Mrhome</button>
+          <button class="btn btn-outline" id="plan-btn-imprimir">🖨️ Imprimir</button>
+        </div>
+      </div>
+
+      <div id="plan-plan-header" style="background:var(--gris-bg);border-radius:8px;padding:11px 15px;margin-bottom:12px;display:grid;grid-template-columns:repeat(5,1fr);gap:8px;font-size:12px">
+        <div><div style="font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.4px">Cliente</div><strong id="plan-ph-cliente">—</strong></div>
+        <div><div style="font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.4px">Proyecto</div><strong id="plan-ph-proyecto">—</strong></div>
+        <div><div style="font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.4px">Unidad</div><strong id="plan-ph-unidad">—</strong></div>
+        <div><div style="font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.4px">Precio</div><strong id="plan-ph-precio">—</strong></div>
+        <div><div style="font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.4px">Esquema</div><strong id="plan-ph-esquema">—</strong></div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th><th>Fecha</th><th>Concepto</th>
+              <th>Cuota Base USD$</th><th>Extra USD$</th>
+              <th>Total Cuota USD$</th><th>Total en RD$</th>
+              <th>% Acum.</th><th>Saldo USD$</th>
+            </tr>
+          </thead>
+          <tbody id="plan-tabla-body">
+            <tr><td colspan="9" style="text-align:center;padding:28px;color:#94a3b8">
+              Complete los datos para generar el cronograma</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div style="height:40px"></div>
   </div>
+</div>
 
   <!-- ─── PANTALLA: CAPACIDAD ─── -->
   <section id="screen-capacidad" class="screen">
